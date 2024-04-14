@@ -1,0 +1,4 @@
+Model_Name,Dataset,Parameters,Accuracy,Precision,Recall,F1_Score,Fit_Time
+RandomForest,scaled_dataset.csv,"{""criterion"": ""gini"", ""max_depth"": null, ""max_features"": ""auto"", ""n_estimators"": 200}",0.9177602799650044,0.9234360410831,0.9031963470319636,0.9132040627885504,2.1893656253814697
+DecisionTree,scaled_dataset.csv,"{""criterion"": ""entropy"", ""max_depth"": null, ""max_features"": null, ""min_samples_split"": 10}",0.8832020997375328,0.8913043478260869,0.8611872146118722,0.8759869948908501,0.07860779762268066
+KNeighborsClassifier,scaled_dataset.csv,"{""algorithm"": ""auto"", ""n_neighbors"": 10, ""p"": 1, ""weights"": ""distance""}",0.8928258967629047,0.87215411558669,0.9095890410958904,0.8904783191774699,2.1497650146484375
