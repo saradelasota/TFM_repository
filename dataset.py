@@ -37,9 +37,11 @@ def main():
 
     # Map the 'status' variable using the dictionary
     df_lexical['status'] = df_lexical['status'].map(status_mapping)
+    
+    #df_lexical.to_csv('datasets/df_lexical.csv')
 
     #FEATURE ENG
-    df_lexical = df_lexical.drop(['nb_or', 'nb_space', 'port', 'path_extension'], axis=1)
+    df_selected = df_lexical.drop(['nb_or', 'nb_space', 'port', 'path_extension'], axis=1)
 
     
     numerical_features = [
@@ -55,15 +57,20 @@ def main():
     
     # Scale the numerical features
     scaler = StandardScaler()
-    scaled_numerical = scaler.fit_transform(df_lexical[numerical_features])
+    scaled_numerical = scaler.fit_transform(df_selected[numerical_features])
     df_scaled_numerical = pd.DataFrame(scaled_numerical, columns=numerical_features)
 
     # Concatenate scaled numerical features with non-numerical features
     df_scaled = pd.concat([df_lexical.drop(numerical_features, axis=1), df_scaled_numerical], axis=1)
 
     # Save the scaled dataset to a CSV file
-    df_scaled.to_csv('scaled_dataset.csv', index=False)
-
+    #df_scaled.to_csv('datasets/scaled_dataset.csv', index=False)
+    
+    full_df['status'] = full_df['status'].map(status_mapping)
+    df_complete_unscaled = full_df
+    df_complete_unscaled.to_csv('datasets/df_complete_unscaled.csv')
+    
+    
 if __name__ == "__main__":
     main()
 
