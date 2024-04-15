@@ -1,4 +1,11 @@
 Model_Name,Dataset,Parameters,Accuracy,Precision,Recall,F1_Score,Fit_Time
 RandomForest,scaled_dataset.csv,"{""criterion"": ""gini"", ""max_depth"": null, ""max_features"": ""auto"", ""n_estimators"": 200}",0.9177602799650044,0.9234360410831,0.9031963470319636,0.9132040627885504,2.1893656253814697
 DecisionTree,scaled_dataset.csv,"{""criterion"": ""entropy"", ""max_depth"": null, ""max_features"": null, ""min_samples_split"": 10}",0.8832020997375328,0.8913043478260869,0.8611872146118722,0.8759869948908501,0.07860779762268066
-KNeighborsClassifier,scaled_dataset.csv,"{""algorithm"": ""auto"", ""n_neighbors"": 10, ""p"": 1, ""weights"": ""distance""}",0.8928258967629047,0.87215411558669,0.9095890410958904,0.8904783191774699,2.1497650146484375
+KNeighborsClassifier,scaled_dataset.csv,"{""algorithm"": ""auto"", ""n_neighbors"": 10, ""p"": 1, ""weights"": ""distance""}",0.8928258967629047,0.87215411558669,0.9095890410958904,0.8904783191774699,2.149765014648437
+RandomForest,df_complete_unscaled.csv,"{""criterion"": ""gini"", ""max_depth"": null, ""max_features"": ""auto"", ""n_estimators"": 100}",0.9606299212598424,0.9589041095890408,0.9589041095890408,0.9589041095890408,1.4580910205841064
+DecisionTree,df_complete_unscaled.csv,"{""criterion"": ""gini"", ""max_depth"": 10, ""max_features"": null, ""min_samples_split"": 2}",0.9378827646544182,0.9296663660955816,0.9415525114155252,0.9355716878402904,0.12595105171203613
+KNeighborsClassifier,df_complete_unscaled.csv,"{""algorithm"": ""auto"", ""n_neighbors"": 5, ""p"": 1, ""weights"": ""distance""}",0.8228346456692913,0.8273244781783681,0.7963470319634703,0.8115402512796649,0.1402418613433838
+RandomForest,df_lexical.csv,"{""criterion"": ""entropy"", ""max_depth"": null, ""max_features"": ""auto"", ""n_estimators"": 200}",0.9129483814523184,0.9132841328413284,0.9041095890410958,0.908673703533731,2.6348469257354736
+DecisionTree,df_lexical.csv,"{""criterion"": ""gini"", ""max_depth"": 10, ""max_features"": null, ""min_samples_split"": 5}",0.8705161854768154,0.8920510304219823,0.8301369863013699,0.8599810785241251,0.0660102367401123
+KNeighborsClassifier,df_lexical.csv,"{""algorithm"": ""ball_tree"", ""n_neighbors"": 10, ""p"": 1, ""weights"": ""distance""}",0.6684164479440071,0.6080821039127646,0.8657534246575342,0.7143933685003768,0.2507047653198242
+SVM,scaled_dataset.csv,"{""C"": 10, ""gamma"": 0.1, ""kernel"": ""rbf""}",0.9072615923009624,0.9091751621872104,0.8958904109589041,0.9024839006439742,4.797637939453125
