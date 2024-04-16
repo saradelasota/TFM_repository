@@ -9,14 +9,23 @@ Created on Fri Apr 12 10:06:27 2024
 #IMPORTED libraries
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.model_selection import train_test_split
 
 def main():
     
-    full_df = pd.read_csv('dataset_TFM.csv')
     
+    ##### COMPLETE UNSCALED DATASET ################
+    df_complete_unscaled = pd.read_csv('dataset_TFM.csv')
+    
+    # Define a dictionary to map string values to binary values
+    status_mapping = {'phishing': 0, 'legitimate': 1}
+
+    df_complete_unscaled['status'] = df_complete_unscaled['status'].map(status_mapping)
+    
+    df_complete_unscaled.to_csv('datasets/df_complete_unscaled.csv')
+    
+    ##### LEXICAL UNSCALED DATSET #################
     #Drop columuns
-    
     content_features = ['nb_hyperlinks','ratio_intHyperlinks','ratio_extHyperlinks','ratio_nullHyperlinks',
     'nb_extCSS','ratio_intRedirection','ratio_extRedirection','ratio_intErrors','ratio_extErrors',
     'login_form','external_favicon','links_in_tags','submit_email','ratio_intMedia','ratio_extMedia',
@@ -25,25 +34,19 @@ def main():
 
     external_features = ['whois_registered_domain','domain_registration_length','domain_age',
     'web_traffic','dns_record','google_index','page_rank']
+        
     
-    full_df.head()
-    print(type(full_df))
-    df_lexical = full_df.drop(content_features + external_features, axis=1, inplace=False)
-
-    #df_lexical = df_lexical.drop(external_features, axis=1, inplace=True)
+    df_lexical_unscaled = df_complete_unscaled.drop(content_features + external_features, axis=1, inplace=False)
     
-    # Define a dictionary to map string values to binary values
-    status_mapping = {'phishing': 0, 'legitimate': 1}
+    df_lexical_unscaled.to_csv('datasets/df_lexical_unscaled.csv')
 
-    # Map the 'status' variable using the dictionary
-    df_lexical['status'] = df_lexical['status'].map(status_mapping)
+
+    ##### LEXICAL SCALED DATASET ################
+    rs = 123
     
-    #df_lexical.to_csv('datasets/df_lexical.csv')
-
-    #FEATURE ENG
-    df_selected = df_lexical.drop(['nb_or', 'nb_space', 'port', 'path_extension'], axis=1)
-
-    
+    # Split the data into training and testing sets
+    X_train, X_test  = train_test_split(df_lexical_unscaled, test_size=0.2, random_state=rs)
+       
     numerical_features = [
     'length_url', 'length_hostname', 'nb_dots', 'nb_hyphens', 'nb_at', 
     'nb_underscore', 'nb_percent', 'nb_slash', 'ratio_digits_url', 'nb_star','nb_colon',
@@ -54,22 +57,47 @@ def main():
     'nb_semicolumn', 'nb_dollar', 'nb_www', 'nb_com', 
     'nb_dslash','nb_external_redirection','nb_redirection']
     
-    
     # Scale the numerical features
     scaler = StandardScaler()
-    scaled_numerical = scaler.fit_transform(df_selected[numerical_features])
-    df_scaled_numerical = pd.DataFrame(scaled_numerical, columns=numerical_features)
+    X_train_scaled = scaler.fit_transform(X_train[numerical_features])
+    X_test_scaled = scaler.transform(X_test[numerical_features])
+    
 
+    # Create DataFrames for scaled numerical features
+    df_train_scaled_numerical = pd.DataFrame(X_train_scaled, columns=numerical_features)
+    df_test_scaled_numerical = pd.DataFrame(X_test_scaled, columns=numerical_features)
+    
+    # Concatenate scaled numerical features with non-numerical features for both training and test sets
+    df_train_scaled = pd.concat([X_train.drop(columns=numerical_features), df_train_scaled_numerical], axis=1)
+    df_test_scaled = pd.concat([X_test.drop(columns=numerical_features), df_test_scaled_numerical], axis=1)
+    
+    # Concatenate training and test sets to create a unique dataset
+    df_scaled = pd.concat([df_train_scaled, df_test_scaled], ignore_index=True)
+    
+    # Save the complete scaled dataset to a CSV file
+    df_scaled.to_csv('datasets/df_lexical_scaled.csv', index=False)
+    
+    
+    
     # Concatenate scaled numerical features with non-numerical features
-    df_scaled = pd.concat([df_lexical.drop(numerical_features, axis=1), df_scaled_numerical], axis=1)
+    #df_scaled = pd.concat([df_lexical.drop(numerical_features, axis=1), df_scaled_numerical], axis=1)
 
     # Save the scaled dataset to a CSV file
     #df_scaled.to_csv('datasets/scaled_dataset.csv', index=False)
     
-    full_df['status'] = full_df['status'].map(status_mapping)
-    df_complete_unscaled = full_df
-    df_complete_unscaled.to_csv('datasets/df_complete_unscaled.csv')
+
     
+    ###### OTHER DATASETS ###########
+    #FEATURE ENG
+    df_selection1 = df_lexical_unscaled.drop(['nb_or'], axis=1)
+    df_selection1.to_csv('datasets/df_selection1.csv', index=False)
+    
+    df_selection2 = df_lexical_unscaled.drop(['nb_or', 'nb_space', 'port', 'path_extension'], axis=1)
+    df_selection2.to_csv('datasets/df_selection2.csv', index=False)
+
+    
+    
+
     
 if __name__ == "__main__":
     main()
