@@ -55,8 +55,8 @@ class SupportVectorMachine:
 
 def main():
 
-    df = pd.read_csv('datasets/scaled_dataset.csv')
-    dataset_name = 'scaled_dataset.csv'
+    df = pd.read_csv('datasets/df_selection2.csv')
+    dataset_name = 'df_selection2.csv'
     # Split the data into features (X) and target variable (y)
     X = df.drop('url', axis=1)
     X = X.drop('status', axis=1)  # Features
@@ -99,12 +99,18 @@ def main():
     # Fit the model to the training data
     svm_model.fit(X_train, y_train)
     
-    # Make predictions on the test data
-    predictions_svm = svm_model.predict(X_test)
-    
     # Calculate time taken
     end_time = t.time()
     fit_time = end_time - start_time
+    
+    start_time = t.time()
+
+    # Make predictions on the test data
+    predictions_svm = svm_model.predict(X_test)
+    # Calculate time taken
+    end_time = t.time()
+    predict_time = end_time - start_time
+    
     
     # Evaluate the model
     model_name = 'SVM'
@@ -126,7 +132,7 @@ def main():
         'recall': svm_recall,
         'f1_score': svm_f1
     }
-    append_evaluation_metrics_to_csv(model_name, evaluation_metrics_svm, dataset_name,best_params,fit_time)
+    append_evaluation_metrics_to_csv(model_name, evaluation_metrics_svm, dataset_name,best_params,fit_time,predict_time)
 
 
 if __name__ == "__main__":
