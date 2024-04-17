@@ -8,13 +8,13 @@ Created on Sun Apr 14 12:17:03 2024
 
 import pandas as pd
 import time as t
-import json
 
 #RandomForest
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score,precision_score,recall_score,f1_score
 
+from evaluation import append_evaluation_metrics_to_csv
 
 class RandomForest:
     
@@ -61,8 +61,8 @@ class RandomForest:
 
 
 def main():
-    df = pd.read_csv('scaled_dataset.csv')
-    dataset_name = 'scaled_dataset.csv'
+    df = pd.read_csv('datasets/df_selection2.csv')
+    dataset_name = 'df_selection2.csv'
     # Split the data into features (X) and target variable (y)
     X = df.drop('url', axis=1)
     X = X.drop('status', axis=1)  # Features
@@ -73,6 +73,7 @@ def main():
     
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=rs)
+    
     
     # Define the hyperparameters grid to search
     param_grid_rf = {
@@ -108,13 +109,21 @@ def main():
     # Fit the model to the training data
     rf_model.fit(X_train, y_train)
     
+    end_time = t.time()
+    
+    # Calculate time taken
+    fit_time = end_time - start_time
+
+    start_time = t.time()
     
     # Make predictions on the test data
     predictions = rf_model.predict(X_test)
     
-    # Calculate time taken
     end_time = t.time()
-    
+
+    # Calculate time taken to predict
+    predict_time = end_time - start_time
+
     
     # Evaluate the model
     model_name = "RandomForest"
@@ -124,7 +133,6 @@ def main():
     rf_f1 = f1_score(y_test, predictions)
     
     
-    fit_time = end_time - start_time
     
     
     print("Test accuracy:", rf_accuracy)
@@ -141,31 +149,8 @@ def main():
     }
     
     # Call the function to append the new evaluation metrics to the existing CSV file
-    append_evaluation_metrics_to_csv(model_name, evaluation_metrics,dataset_name,best_params, fit_time)
+    append_evaluation_metrics_to_csv(model_name, evaluation_metrics,dataset_name,best_params, fit_time,predict_time)
     
     
-def append_evaluation_metrics_to_csv(model_name, evaluation_metrics,dataset_name,best_params,fit_time, filename='model_evaluation_metrics.csv'):
-    try:
-        # Load existing CSV file
-        df_metrics = pd.read_csv(filename)
-    except FileNotFoundError:
-        # If the file doesn't exist yet, create an empty DataFrame
-        df_metrics = pd.DataFrame(columns=['Model_Name','Dataset','Parameters','Accuracy', 'Precision', 'Recall', 'F1_Score', 'Fit_Time'])
-
-    # Convert the best_params dictionary to a JSON string
-    best_params_str = json.dumps(best_params)
-
-
-    # Create a DataFrame with the new metrics
-    new_row = pd.DataFrame([[model_name,dataset_name,best_params_str, evaluation_metrics['accuracy'], evaluation_metrics['precision'],
-                             evaluation_metrics['recall'], evaluation_metrics['f1_score'], fit_time]],
-                           columns=['Model_Name', 'Dataset','Parameters','Accuracy', 'Precision', 'Recall', 'F1_Score', 'Fit_Time'])
-
-    # Append the new row to the existing DataFrame
-    df_metrics = pd.concat([df_metrics, new_row], ignore_index=True)
-
-    # Save the updated DataFrame to the CSV file
-    df_metrics.to_csv(filename, index=False)
-
 if __name__ == "__main__":
     main()
